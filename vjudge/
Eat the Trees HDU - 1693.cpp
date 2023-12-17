@@ -2,7 +2,6 @@
 #include <utility>
 
 using namespace std;
-
 /*
 #define INF 1000000000
 #define INFLL 1000000000000000000ll
@@ -50,9 +49,7 @@ void solve() {
 
 			for(int k = 0; k < (1 << m); ++k) {
 				dp[1][k][0] += dp[0][k][1];
-				
 				if((k & (1 << (j - 1))) || !a[i][j - 1]) dp[1][k][0] += dp[0][k][0];
-
 				int mask = 3 << (j - 1);
 				if(!(mask & bad)) dp[1][k ^ mask][(k >> j) & 1] += dp[0][k][0];
 			}

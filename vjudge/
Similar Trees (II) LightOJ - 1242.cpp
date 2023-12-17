@@ -14,7 +14,6 @@ using ii = pair<int, int>;
 std::mt19937 rnd(chrono::system_clock::now().time_since_epoch().count());
 
 const int N = 101;
-
 vector<vector<int>> g[2];
 vector<int> altura[2][N], pai[2];
 int n[2], caso;

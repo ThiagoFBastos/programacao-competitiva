@@ -11,6 +11,7 @@ using u16 = unsigned short;
 using ld = long double;
 using ii = pair<int, int>;
 
+
 const int inf = 1e9;
 
 struct FlowEdge {

@@ -17,6 +17,7 @@ using ld = long double;
 using ii = pair<int, int>;
 using i128 = __int128;
 
+
 i64 modMul(i64 a, i64 b, i64 m) {
 	return (i64)((__int128)a * b % m);
 }
