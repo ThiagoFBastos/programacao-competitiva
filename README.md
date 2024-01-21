@@ -1,6 +1,6 @@
 # Repositório de códigos
+Repositório de códigos que submeti em sites de programação competitiva para treinamento de lógica de programação como :
 
-Repositório de códigos que submeti em sites de programação competitiva como:
 - Codeforces
 - Atcoder
 - Codechef
