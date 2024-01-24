@@ -1,5 +1,5 @@
 # Repositório de códigos
-Repositório de códigos que submeti em sites de programação competitiva para treinamento de lógica de programação como :
+Repositório de códigos que submeti em sites de programação competitiva para treinamento de lógica de programação e pata a preparação para maratonas de programação como :
 
 - Codeforces
 - Atcoder
