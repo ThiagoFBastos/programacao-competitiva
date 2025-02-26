@@ -8,7 +8,7 @@ Repositório de códigos que submeti em sites de programação competitiva para 
 - Oj.uz: [thiago_bastos](https://oj.uz/profile/thiago_bastos)
 - DMOJ: [thiago_bastos](https://dmoj.ca/user/thiago_bastos)
 - vjugde: [thiagob](https://vjudge.net/user/thiagob)
-- Beecrowd: [devman](https://www.beecrowd.com.br/judge/pt/profile/225854) / [ThiagoBastos](https://judge.beecrowd.com/pt/profile/442267)
+- Beecrowd: [devman](https://www.beecrowd.com.br/judge/pt/profile/225854) / [ThiagoBastos](https://judge.beecrowd.com/pt/profile/442267) / [tfbdsilva](https://judge.beecrowd.com/pt/profile/55647)
 - ACM ICPC: [thiago_bastos](https://www.acmicpc.net/user/thiago_bastos)
 - SPOJ: far_from_tle
 - Light OJ: 
@@ -17,4 +17,5 @@ Repositório de códigos que submeti em sites de programação competitiva para 
 - Hackerrank: [thiagobastos](https://www.hackerrank.com/profile/thiagobastos)
 - Hackerearth: [thiagobastos1705](https://www.hackerearth.com/@thiagobastos1705)
 - CodeWars: [thiago_bastos](https://www.codewars.com/users/thiago_bastos)
+- Kattis: [thiagobastos](https://open.kattis.com/users/thiagobastos)
 - Entre outros
