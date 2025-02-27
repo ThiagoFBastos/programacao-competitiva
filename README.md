@@ -18,4 +18,5 @@ Repositório de códigos que submeti em sites de programação competitiva para 
 - Hackerearth: [thiagobastos1705](https://www.hackerearth.com/@thiagobastos1705)
 - CodeWars: [thiago_bastos](https://www.codewars.com/users/thiago_bastos)
 - Kattis: [thiagobastos](https://open.kattis.com/users/thiagobastos)
+- Leetcode: [thiago_bastos](https://leetcode.com/u/thiago_bastos/)
 - Entre outros
