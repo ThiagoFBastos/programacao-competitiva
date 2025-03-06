@@ -11,7 +11,7 @@ Repositório de códigos que submeti em sites de programação competitiva para 
 - Beecrowd: [devman](https://www.beecrowd.com.br/judge/pt/profile/225854) / [ThiagoBastos](https://judge.beecrowd.com/pt/profile/442267) / [tfbdsilva](https://judge.beecrowd.com/pt/profile/55647)
 - ACM ICPC: [thiago_bastos](https://www.acmicpc.net/user/thiago_bastos)
 - SPOJ: far_from_tle
-- Light OJ: 
+- Light OJ: [thiagobastos](https://lightoj.com/user/thiagobastos)
 - Timus: [thiago](https://acm.timus.ru/author.aspx?id=292345)
 - Uva Online Judge: [devman](https://uhunt.onlinejudge.org/id/1023716)
 - Hackerrank: [thiagobastos](https://www.hackerrank.com/profile/thiagobastos)
