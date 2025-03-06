@@ -12,7 +12,7 @@ Repositório de códigos que submeti em sites de programação competitiva para 
 - ACM ICPC: [thiago_bastos](https://www.acmicpc.net/user/thiago_bastos)
 - SPOJ: far_from_tle
 - Light OJ: 
-- Timus
+- Timus: [thiago](https://acm.timus.ru/author.aspx?id=292345)
 - Uva Online Judge: [devman](https://uhunt.onlinejudge.org/id/1023716)
 - Hackerrank: [thiagobastos](https://www.hackerrank.com/profile/thiagobastos)
 - Hackerearth: [thiagobastos1705](https://www.hackerearth.com/@thiagobastos1705)
