@@ -19,4 +19,5 @@ Repositório de códigos que submeti em sites de programação competitiva para 
 - CodeWars: [thiago_bastos](https://www.codewars.com/users/thiago_bastos)
 - Kattis: [thiagobastos](https://open.kattis.com/users/thiagobastos)
 - Leetcode: [thiago_bastos](https://leetcode.com/u/thiago_bastos/)
+- Project Euler: thiagobastos
 - Entre outros
