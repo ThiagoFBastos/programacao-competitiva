@@ -20,5 +20,5 @@ Repositório de códigos que submeti em sites de programação competitiva para 
 - Kattis: [thiagobastos](https://open.kattis.com/users/thiagobastos)
 - Leetcode: [thiago_bastos](https://leetcode.com/u/thiago_bastos/)
 - Project Euler: thiagobastos
-- Google Code Jam: [thiago_bastos](https://zibada.guru/gcj/profile/thiago_bastos)
+- Google Coding Competitions: [thiago_bastos](https://zibada.guru/gcj/profile/thiago_bastos)
 - Entre outros
