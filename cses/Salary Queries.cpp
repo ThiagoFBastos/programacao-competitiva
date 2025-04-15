@@ -60,10 +60,17 @@ int main() {
  
 	for(int k = 0; k < q; ++k) {
  
-		scanf(" %c%d%d", &get<0>(queries[k]), &get<1>(queries[k]), &get<2>(queries[k]));
+        auto& [a, b, c] = queries[k];
+
+		scanf(" %c%d%d", &a, &b, &c);
  
-		if(get<0>(queries[k]) == '!')
-			numbers.push_back(get<2>(queries[k]));	
+		if(a == '!')
+			numbers.push_back(c);
+        else
+        {
+            numbers.push_back(b);
+            numbers.push_back(c);
+        }
 	}
  
 	sort(numbers.begin(), numbers.end());
@@ -92,11 +99,8 @@ int main() {
 		else {
  
 			int a = lower_bound(numbers.begin(), numbers.end(), k) - numbers.begin();
-			int b = lower_bound(numbers.begin(), numbers.end(), x) - numbers.begin();
+			int b = upper_bound(numbers.begin(), numbers.end(), x) - numbers.begin() - 1;
 			
-			if(numbers[b] > x) 
-				--b;
- 
 			printf("%d\n", ft.query(b + 1) - ft.query(a));
 		}
 	}
