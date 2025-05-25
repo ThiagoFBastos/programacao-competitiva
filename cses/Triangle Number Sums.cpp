@@ -11,11 +11,29 @@ bool triangle(long long x) {
 	return f(n) == x;
 }
  
+vector<long long> T;
+ 
+void preComputeTriangles() {
+	constexpr long long MAXN = 1e12L;
+ 
+	for(int i = 0; f(i) <= MAXN; ++i)
+		T.push_back(f(i));
+}
+ 
 bool triangle2(long long x) {
-	for(int i = 0; f(i) <= x; ++i) {
-		if(triangle(x - f(i)))
-			return true;
+	int lo = 0, hi = T.size() - 1;
+ 
+	if(x % 2 == 0 && binary_search(T.begin(), T.end(), x / 2))
+		return true;
+		
+	while(lo < hi) {
+		auto sum = T[lo] + T[hi];
+		
+		if(sum > x) --hi;
+		else if(sum < x) ++lo;
+		else return true;
 	}
+ 
 	return false;
 }
  
@@ -23,6 +41,8 @@ int main() {
  
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
+ 
+	preComputeTriangles();
  
 	int t;
 	
