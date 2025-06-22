@@ -68,17 +68,10 @@ fn main() {
    for _i in 0..tests {
       let sentence = sc.read_line();
 
-      let words: Vec<String> = sentence.split_whitespace()
-                           .map(|x:&str| String::from(x))
-                           .collect::<Vec<String>>();
+      let word: String = sentence.split_whitespace()
+                           .map(|x:&str| x.chars().nth(0).unwrap())
+                           .collect::<String>();
       
-      let mut first_letters = String::new();
-
-      for word in words.into_iter() {
-         let letter = word.chars().nth(0).unwrap();
-         first_letters.push(letter);
-      }
-
-      println!("{}", first_letters);
+      println!("{}", word);
    }
 }
