@@ -1,7 +1,6 @@
 #![allow(unused_imports)]
 #![allow(dead_code)]
-use std::cmp::*;
-use std::collections::*;
+use std::collections::VecDeque;
 
 struct Scanner {
    buffer : VecDeque<String>,
@@ -10,8 +9,8 @@ struct Scanner {
  
 impl Scanner {
  
-   fn new() -> Scanner {
-      Scanner {
+   fn new() -> Self {
+      Self {
          buffer: VecDeque::new(),
          eof: false
       }
@@ -25,8 +24,8 @@ impl Scanner {
          match std::io::stdin().read_line(&mut input) {
             Ok(0) => self.eof = true,
             Ok(_) => {},
-            Err(e) => panic!("panico {}", e)
-         };
+            Err(e) => panic!("{}", e)
+         }
 
          for word in input.split_whitespace() {
             self.buffer.push_back(word.to_string())
@@ -49,7 +48,7 @@ impl Scanner {
          Ok(0) => self.eof = true,
          Ok(_) => {},
          Err(e) => panic!("{}", e)
-      };
+      }
 
       if input.ends_with('\n') {
          input.pop();
@@ -67,17 +66,17 @@ impl Scanner {
 }
 
 struct BIT2D {
-    data: Vec<Vec<i32>>,
+    data: Vec<i32>,
     rows: usize,
     columns: usize
 }
 
 impl BIT2D {
 
-    fn new(rows: usize, columns: usize) -> BIT2D {
+    fn new(rows: usize, columns: usize) -> Self {
 
-        BIT2D { 
-            data: vec![vec![0; columns + 1]; rows + 1], 
+        Self {
+            data: vec![0; (columns + 1) * (rows + 1)], 
             rows: rows, 
             columns: columns 
         }
@@ -91,14 +90,15 @@ impl BIT2D {
             panic!("somente indices não negativos são aceitos");
         }
 
-        let mut answer = i32::default();
+        let mut answer = 0;
 
         while x > 0 {
             let mut k = y;
 
             while k > 0 {
-                answer += self.data[x as usize][k as usize];
-                k -= k & -k;
+               let index = x * ((self.columns + 1) as i32) + k;
+               answer += self.data[index as usize];
+               k -= k & -k;
             }
 
             x -= x & -x;
@@ -107,6 +107,7 @@ impl BIT2D {
         return answer;
     }
 
+    #[inline(always)]
     fn calculate(&self, x0: i32, y0: i32, x1: i32, y1: i32) -> i32 {
         return self.query(x1, y1) - self.query(x1, y0 - 1) - self.query(x0 - 1, y1) + self.query(x0 - 1, y0 - 1);
     }
@@ -124,8 +125,9 @@ impl BIT2D {
             let mut k = y;
 
             while k as usize <= self.columns {
-                self.data[x as usize][k as usize] += value;
-                k += k & -k;
+               let index = x * ((self.columns + 1) as i32) + k;
+               self.data[index as usize] += value;
+               k += k & -k;
             }
 
             x += x & -x;
