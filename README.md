@@ -1,7 +1,7 @@
 # Repositório de códigos
 Repositório de códigos que submeti em sites de programação competitiva para treinamento de lógica de programação e para me preparar para as maratonas de programação como :
 
-- Codeforces: [thiago_bastos](https://codeforces.com/profile/thiago_bastos)
+- Codeforces: [thiago_bastos](https://codeforces.com/profile/thiago_bastos) / [Mr-Roboto](https://codeforces.com/profile/Mr-Roboto) 
 - Atcoder: [thiago_bastos](https://atcoder.jp/users/thiago_bastos)
 - Codechef: [far_from_tle](https://www.codechef.com/users/far_from_tle)
 - CSES: [roboto](https://cses.fi/user/8459)
