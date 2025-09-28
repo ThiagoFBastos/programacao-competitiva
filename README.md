@@ -21,4 +21,5 @@ Repositório de códigos que submeti em sites de programação competitiva para 
 - Leetcode: [thiago_bastos](https://leetcode.com/u/thiago_bastos/)
 - Project Euler: thiagobastos
 - Google Coding Competitions: [thiago_bastos](https://zibada.guru/gcj/profile/thiago_bastos)
+- Neps Academy: [Thiago Bastos](https://neps.academy/br/user/5951)
 - Entre outros
