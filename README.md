@@ -23,4 +23,5 @@ Repositório de códigos que submeti em sites de programação competitiva para 
 - Google Coding Competitions: [thiago_bastos](https://zibada.guru/gcj/profile/thiago_bastos)
 - Neps Academy: [Thiago Bastos](https://neps.academy/br/user/5951)
 - Yosupo: [thiago_bastos](https://judge.yosupo.jp/profile)
+- szkopul [thiago_bastos](https://szkopul.edu.pl/~thiago_bastos/)
 - Entre outros
