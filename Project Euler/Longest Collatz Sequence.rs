@@ -78,7 +78,7 @@ fn main() {
 
    let max_chain = chain.iter().filter(|pair| *pair.0 <= N).map(|pair| (pair.1, pair.0)).max();
 
-   let count = max_chain.unwrap().1;
+   let target = max_chain.unwrap().1;
 
-   writeln!(handle, "{}", count).ok();
+   writeln!(handle, "{}", target).ok();
 }
