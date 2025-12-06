@@ -83,7 +83,7 @@ fn main() {
    dp[0] = 1;
 
    for i in 1..=n {
-      for j in (i..m-1).rev() {
+      for j in (i..m).rev() {
          dp[j] = (dp[j] + dp[j - i]) % MOD;
       }
    }
