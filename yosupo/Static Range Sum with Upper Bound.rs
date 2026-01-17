@@ -1,8 +1,13 @@
+/*
+ * Author: Thiago Felipe Bastos da Silva
+ * Created: 2026-01-17
+ */
+
 #![allow(unused_imports)]
 #![allow(dead_code)]
+use core::time;
 use std::collections::{VecDeque};
 use std::io::{self, BufRead, Error, ErrorKind, Read, Write};
-use std::ops::AddAssign;
 
 struct Scanner {
    buffer: VecDeque<String>,
@@ -64,38 +69,46 @@ impl Scanner {
    }
 }
 
-#[derive(Clone)]
-struct FenwickTree<T> {
-   sum: Vec<T>,
-   length: usize
+trait Constants {
+
+   fn initial() -> Self; // the initial constant
 }
 
-impl<T: Default + Copy + AddAssign> FenwickTree<T> {
+#[derive(Clone)]
+struct FenwickTree<T, OP> {
+   sum: Vec<T>, // the fenwick tree data
+   length: usize, // the number of elements of the fenwick tree
+   op: OP // the binary operator to apply an operation in the fenwick tree
+}
+
+impl<T: Constants + Copy, OP: Fn(T, T) -> T> FenwickTree<T, OP> {
 
     /**
      * create a new instance of FenwickTree
-     * @param length the number of elements of Fenwick Tree
-     * @return the new instance of FenwickTree with zero values 
+     * @param length the number of elements of the Fenwick Tree
+     * @param op the binary function that handles with operations
+     * @return the new instance of FenwickTree
      */
-   fn new(length: usize) -> Self {
+   fn new(length: usize, op: OP) -> Self {
 
       Self {
-         sum: vec![T::default(); length + 1],
-         length
+         sum: vec![T::initial(); length + 1],
+         length,
+         op
       }
    }
 
    /**
-    * find the sum of first k elements
-    * @param k the number of the first elements for which we want to calculate the sum
+    * find the result of an operation of first k elements
+    * @param k the number of the first elements for which we want to find the result
     */
    fn query(&self, mut k: i32) -> T {
-      let mut sum = T::default();
+      let mut sum = T::initial();
 
       assert!(k <= self.length as i32);
 
       while k > 0 {
-         sum += self.sum[k as usize];
+         sum = (self.op)(sum, self.sum[k as usize]);
          k -= k & -k;
       }
 
@@ -103,21 +116,27 @@ impl<T: Default + Copy + AddAssign> FenwickTree<T> {
    }
 
    /**
-    * add a value to the element at position k 
+    * update a value to the element at position k 
     * @param k the position for which we want to modify
-    * @param value the value for which we want to sum
+    * @param value the value for which we want to apply
     */
    fn update(&mut self, mut k: i32, value: T) {
 
       assert!(k > 0);
 
       while k <= self.length as i32 {
-         self.sum[k as usize] += value;
+         self.sum[k as usize] = (self.op)(self.sum[k as usize], value);
          k += k & -k;
       }
    }
 }
 
+impl Constants for (i32, i64) {
+
+   fn initial() -> Self {
+      (0, 0)
+   }
+}
 
 fn main() {
    let mut writer = io::BufWriter::new(io::stdout());
@@ -129,8 +148,12 @@ fn main() {
 
    let mut sweep = Vec::with_capacity(n + q);
    let mut answer = vec![(0, 0); q];
-   let mut ft_sum = FenwickTree::new(n);
-   let mut ft_count = FenwickTree::new(n);
+
+   let operation = |a: (i32, i64), b: (i32, i64)| {
+      return (a.0 + b.0, a.1 + b.1);
+   };
+
+   let mut ft = FenwickTree::new(n, operation);
 
    for i in 0..n {
       let value = sc.next::<i32>().unwrap();
@@ -151,11 +174,13 @@ fn main() {
 
    for (x, t, l, r, pos) in sweep {
       if t == 0 {
-         ft_count.update(l as i32 + 1, 1);
-         ft_sum.update(l as i32 + 1, x as i64);
+         ft.update(l as i32 + 1, (1, x as i64));
       } else {
-         answer[pos].0 = ft_count.query(r as i32 + 1) - ft_count.query(l as i32); 
-         answer[pos].1 = ft_sum.query(r as i32 + 1) - ft_sum.query(l as i32);
+         let (count_left, sum_left) = ft.query(l as i32);
+         let (count_right, sum_right) = ft.query(r as i32 + 1);
+
+         answer[pos].0 = count_right - count_left;
+         answer[pos].1 = sum_right - sum_left;
       }
    }
 
