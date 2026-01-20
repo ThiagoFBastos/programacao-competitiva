@@ -1,5 +1,5 @@
-# Repositório de códigos
-Repositório de códigos que submeti em sites de programação competitiva para treinamento de lógica de programação e para me preparar para as maratonas de programação como :
+# Repository of code
+Repository of code that I have submitted to competitive programming platforms for training programming logic and preparing for programming contests such as:
 
 - Codeforces: [thiago_bastos](https://codeforces.com/profile/thiago_bastos) / [Mr-Roboto](https://codeforces.com/profile/Mr-Roboto) 
 - Atcoder: [thiago_bastos](https://atcoder.jp/users/thiago_bastos)
