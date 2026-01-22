@@ -52,3 +52,19 @@
 - [Minimum Spanning Tree](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Minimum%20Spanning%20Tree.rs)
 
     Simple Kruskal MST algorithm
+
+- [Number of Subsequences](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Number%20of%20Subsequences.rs)
+
+    Simple DP solution that calculate the number of subsequences based on the number of subsequences to the left and the number of subsquences that ends with the same number
+
+- [Point Add Range Sum](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Point%20Add%20Range%20Sum.rs)
+
+    Simple fenwick tree application
+
+- [Point Add Rectangle Sum](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Point%20Add%20Rectangle%20Sum.rs)
+
+    Simple usage of a Fenwick Tree with compressed coordinates
+
+- [Point Set Range Composite (Large Array)](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Point%20Set%20Range%20Composite%20(Large%20Array).rs)
+
+    This can be solved with a segment tree being that the values are functions and the operations with them are composition of functions. Thus, we can answer the value of f(x). 
