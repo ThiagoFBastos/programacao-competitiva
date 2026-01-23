@@ -18,7 +18,7 @@
 
 - [Double-Ended Priority Queue](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Double-Ended%20Priority%20Queue.rs)
 
-    Here we simulated a std::multiset of C++ to get the min and max elements of a set. To do this we used a BTreeMap where the key is the element and the value is the count of these keys.
+    Here we simulate a std::multiset of C++ to get the min and max elements of a set. To do this we use a BTreeMap where the key is the element and the value is the count of these keys.
 
 - [Enumerate Palindromes](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Enumerate%20Palindromes.rs)
 
@@ -26,7 +26,7 @@
 
 - [Jump on Tree](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Jump%20on%20Tree.rs)
 
-    Here we used a lowest common ancestor algorithm based on binary lifting and we found the k-th vertex making jumpings using the sparse table
+    Here we use a lowest common ancestor algorithm based on binary lifting and we find the k-th vertex making jumpings using the sparse table
 
 - [Longest Increasing Subsequence](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Longest%20Increasing%20Subsequence.rs)
 
@@ -41,12 +41,13 @@
     Simple algorithm to sum up two 128 bit integers.
 
 - [Many A + B](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Many%20A%20%2B%20B.rs)
+
     Simple algorithm to sum up two integers.
 
 - [Maximum Independent Set](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Maximum%20Independent%20Set.rs)
 
-    Here we used the meet-in-the-middle technique to find the maximum independent set.
-    In the first part, we found the largest subset of vertices whose induced graph is an independent set and that is a subset of a given set.
+    Here we use the meet-in-the-middle technique to find the maximum independent set.
+    In the first part, we find the largest subset of vertices whose induced graph is an independent set and that is a subset of a given set.
     In the second part, given an induced graph that is an independent set, we find the largest independent set from the first part that is a subset of the complement of its neighborhood.
 
 - [Minimum Spanning Tree](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Minimum%20Spanning%20Tree.rs)
@@ -55,7 +56,7 @@
 
 - [Number of Subsequences](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Number%20of%20Subsequences.rs)
 
-    Simple DP solution that calculate the number of subsequences based on the number of subsequences to the left and the number of subsquences that ends with the same number
+    Simple DP solution that calculates the number of subsequences based on the number of subsequences to the left and the number of subsquences that end with the same number
 
 - [Point Add Range Sum](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Point%20Add%20Range%20Sum.rs)
 
@@ -67,4 +68,18 @@
 
 - [Point Set Range Composite (Large Array)](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Point%20Set%20Range%20Composite%20(Large%20Array).rs)
 
-    This can be solved with a segment tree being that the values are functions and the operations with them are composition of functions. Thus, we can answer the value of f(x). 
+    This can be solved with a segment tree being that the values are functions and the operations with them are composition of functions. Thus, we can answer the value of f(x).
+    Obs: we have to compress the coordinates due to the number of functions be large.
+
+- [Point Set Range Composite](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Point%20Set%20Range%20Composite.rs)
+
+    This can be solved with a segment tree being that the values are functions and the operations with them are composition of functions. Thus, we can answer the value of f(x).
+
+- [Point Set Range Frequency](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Point%20Set%20Range%20Frequency.rs)
+
+    Here we store a pair of element and its position in the array, furthermore we use a custom Ordered Set that supports the order_of_key function like the GNU PBDS ordered_set in C++ to find the count of a specific number inside an interval.
+    To simulate an Ordered Set we use a Fenwick Tree to handle the count of elements at a specific position and a struct that uses that tree to do the operations of an Ordered Set. That set is a little uncommon, because the keys are passed when we build it.
+
+- [Predecessor Problem](https://github.com/ThiagoFBastos/competitive-programming/blob/main/yosupo/Predecessor%20Problem.rs)
+
+    Simple problem that uses a custom set like the std::set of C++.
