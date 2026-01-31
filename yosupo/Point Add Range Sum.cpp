@@ -3,16 +3,18 @@
 using namespace std;
 
 template <typename T, typename Op>
-requires std::regular_invocable<Op, T, T>
-&& std::same_as<std::invoke_result_t<Op, T, T>, T>
+requires std::regular_invocable<Op&, const T&, const T&>
+&& std::convertible_to<std::invoke_result_t<Op&, const T&, const T&>, T>
 && std::copy_constructible<T>
 class SegTree
 {
 public:
 
+	using value_type = T;
+
 	SegTree(std::size_t n, Op&& op, T identity_value):
 		_len(n),
-		_op(op),
+		_op(std::forward<Op>(op)),
 		_identity_value(identity_value)
 	{
 		if(n == 0)
@@ -33,7 +35,8 @@ public:
 
 	T query(std::size_t l, std::size_t r) const
 	{
-		T result = _identity_value;
+		T result_left = _identity_value;
+		T result_right = _identity_value;
 
 		if(l > r)
 			throw std::invalid_argument("the range is degenerated");
@@ -42,11 +45,11 @@ public:
 
 		for(l += _len, r += _len; l <= r; l >>= 1, r >>= 1)
 		{
-			if(l & 1) result = _op(result, _container[l++]);
-			if(~r & 1) result = _op(result, _container[r--]);		
+			if(l & 1) result_left = _op(result_left, _container[l++]);
+			if(~r & 1) result_right = _op(_container[r--], result_right);
 		}
 
-		return result;
+		return _op(result_left, result_right);
 	}
 
 	void update(std::size_t k, T value)
@@ -60,6 +63,11 @@ public:
 
 		for(k >>= 1; k; k >>= 1)
 			_container[k] = _op(_container[k << 1], _container[(k << 1) | 1]);
+	}
+
+	std::size_t size() const noexcept
+	{
+		return _len;
 	}
 
 private:
@@ -101,7 +109,7 @@ int main() {
 		return val;
 	});
 
-	auto st = make_segment_tree(ranges::begin(values), ranges::end(values), std::plus<long long>(), 0ll);
+	auto st = make_segment_tree(ranges::begin(values), ranges::end(values), plus<>{}, 0ll);
 
 	while(q-- > 0) {
 		int t;
