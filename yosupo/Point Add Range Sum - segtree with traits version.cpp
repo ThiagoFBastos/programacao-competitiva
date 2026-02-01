@@ -3,7 +3,6 @@
 using namespace std;
 
 template<typename T>
-requires std::copy_constructible<T>
 class SegTreeTraits
 {
 public:
@@ -21,7 +20,19 @@ public:
     }
 };
 
-template <typename Traits>
+template<typename Traits>
+concept SegTreeInterfaceTraits = 
+requires (const typename Traits::value_type& a, const typename Traits::value_type& b)
+{
+	typename Traits::value_type;
+
+	{Traits::neutral()} -> std::same_as<typename Traits::value_type>;
+
+	{Traits::merge(a, b)} -> std::same_as<typename Traits::value_type>;
+}
+&& std::copy_constructible<typename Traits::value_type>;
+
+template <SegTreeInterfaceTraits Traits>
 class SegTree
 {
 public:
