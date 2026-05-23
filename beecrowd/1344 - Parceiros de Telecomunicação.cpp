@@ -1,131 +1,81 @@
-#include <cstdio>
-#include <queue>
-#include <deque>
-#include <cstring>
+#include <bits/stdc++.h>
 
-static std :: deque<int> *adj {};
-static int *grau {};
-static bool *acesso {};
+using namespace std;
 
-static void componente(int[], int&, int);
-static void componente(int, int&, int);
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-void componente(int C[], int& i, int k)
-{
-	acesso[k] = false;
-	C[i++] = k;
+    size_t n, p, k;
 
-	for(int w : adj[k])
-	{
-		if(acesso[w])
-			componente(C, i, w);
-	}
-}
+    while(cin >> n >> p >> k && n) {
+        vector<set<int>> adj(n);
+        queue<int> q;
 
-void componente(int prop, int& i, int k)
-{
-	acesso[k] = false;
+        for(size_t i = 0; i < p; ++i) {
+            int u, v;
 
-	++i;
+            cin >> u >> v;
+            --u, --v;
+            
+            adj[u].emplace(v);
+            adj[v].emplace(u);
+        }
+        
+        for(size_t u = 0; u < n; ++u) {
+            if(adj[u].size() < k)
+                q.push(u);
+        }
+        
+        while(!q.empty()) {
+            int u = q.front();
 
-	for(int w : adj[k])
-	{
-		if(acesso[w] && grau[w] >= prop)
-			componente(prop, i, w);
-	}
-}
+            q.pop();
 
-int main()
-{
-	int n, p, k;
-	
-	while(true)
-	{
-		int *C;
-		int tam {};
+            for(const auto& v : adj[u]) {
 
-		scanf("%d%d%d", &n, &p, &k);
+                auto deg = adj[v].size();
 
-		if(!n)
-			break;
+                adj[v].erase(u);
 
-		C = new int[n];
+                if(deg == k && adj[v].size() < k)
+                    q.push(v);
+            }
 
-		adj = new std :: deque<int>[n];
-		grau = new int[n];
-		acesso = new bool[n];
+            adj[u].clear();
+        }
 
-		memset(acesso, 1, sizeof(bool) * n);
-		memset(grau, 0, sizeof(int) * n);
+        int largest_subset {};
+        vector<bool> vis(n, false);
+        
+        for(size_t u = 0; u < n; ++u) {
+            if(vis[u] || adj[u].size() < k) continue;
 
-		for(int i = 0; i < p; ++i)
-		{
-			int v1, v2;
+            queue<int> q;
+            int cnt {};
 
-			scanf("%d%d", &v1, &v2);
+            vis[u] = true;
+            q.push(u);
 
-			--v1;
-			--v2;
+            while(!q.empty()) {
+                int u = q.front();
 
-			++grau[v1];
-			++grau[v2];
+                q.pop();
 
-			adj[v1].push_back(v2);
-			adj[v2].push_back(v1);
-		}
+                ++cnt;
 
-		for(int i = 0; i < n; ++i)
-		{
-			if(acesso[i])
-			{
-				std :: queue<int> fila;
-				int j = 0;
+                for(const auto& v : adj[u]) {
+                    if(vis[v]) continue;
+                    vis[v] = true;
+                    q.push(v);
+                }
+            }
 
-				componente(C, j, i);
+            largest_subset = max(largest_subset, cnt);
+        }
+        
+        cout << largest_subset << '\n';
+    }
 
-				for(int i = j - 1; i >= 0; --i)
-				{
-					if(grau[C[i]] < k)
-						fila.push(C[i]);
-				}
-
-				while(!fila.empty())
-				{
-					int src = fila.front();
-
-					fila.pop();
-
-					for(int w : adj[src])
-					{
-						if(grau[w] >= k && --grau[w] < k)
-							fila.push(w);
-					}
-				}
-			}
-		}
-
-		memset(acesso, 1, n * sizeof(bool));
-
-		for(int i = 0; i < n; ++i)
-		{
-			if(acesso[i] && grau[i] >= k)
-			{
-				int j = 0;
-
-				componente(k, j, i);
-
-				if(j > tam)
-					tam = j;
-			}
-		}
-
-		printf("%d\n", tam);
-
-		delete[] adj;
-		delete[] grau;
-		delete[] acesso;
-		delete[] C;
-	}
-
-	return 0;
+    return 0;
 }
