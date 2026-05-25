@@ -2,168 +2,101 @@
 
 using namespace std;
 
-using coordenada = tuple<int, int, int>;
-using ii = pair<int, int>;
+constexpr int N = 1e2 + 5, M = 8;
+
+int dist[1 << M][N][N];
 
 int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-	int n, m;
-	int count_bits[256];
-	
-	count_bits[0] = 0;
-	
-	for(int k = 1; k < 256; ++k)
-		count_bits[k] = count_bits[k / 2] + (k & 1);
-	
-	while(scanf("%d%d", &n, &m) != EOF) {
-	
-		int w, h, ESTADOS = 1 << n, x, y, xf, yf, ***cst;
-		char **mapa;
-		map<ii, int> graos;
-		
-		scanf("%d%d", &w, &h);
-		
-		mapa = new char*[h];
-		cst = new int**[h];
-		
-		for(int i = 0; i < h; ++i) {
-		
-			cst[i] = new int*[w];
-			
-			mapa[i] = new char[w + 1];
-			
-			scanf("%s", mapa[i]);
-			
-			for(int j = 0; j < w; ++j) {
-			
-				if(mapa[i][j] == 'R')
-					x = i, y = j;
-					
-				else if(mapa[i][j] == 'S')
-					xf = i, yf = j;
-					
-				else if(mapa[i][j] == '*') {
-				
-					int pos = graos.size();
-					
-					graos[{i, j}] = pos;
-				}
-				
-				cst[i][j] = new int[ESTADOS];
-				memset(cst[i][j], -1, ESTADOS * sizeof(int));
-			}
-		}
-		
-		queue<coordenada> Q;
-		
-		cst[x][y][0] = 0;
-		
-		Q.push(coordenada {x, y, 0});
-		
-		while(!Q.empty()) {
-		
-			auto [x, y, e] = Q.front();
-	
-			Q.pop();
-		
-			if(cst[x][y][e] < m) {
-			
-				if(x < h - 1) {
-				
-					if(int ge = 0; mapa[x + 1][y] == '*' && cst[x + 1][y][(ge = e | 1 << graos[{x + 1, y}])] == -1) {
-					
-						cst[x + 1][y][ge] = 1 + cst[x][y][e];
-						Q.push(coordenada {x + 1, y, ge});
-					}
-					
-					else if(mapa[x + 1][y] != '#') {
-					
-						if(cst[x + 1][y][e] == -1) {
-						
-							cst[x + 1][y][e] = 1 + cst[x][y][e];
-							Q.push(coordenada {x + 1, y, e});	
-						}
-					}
-				}
-				
-				if(x) {
-				
-					if(int ge = 0; mapa[x - 1][y] == '*' && cst[x - 1][y][(ge = e | 1 << graos[{x - 1, y}])] == -1) {
-					
-						cst[x - 1][y][ge] = 1 + cst[x][y][e];
-						Q.push(coordenada {x - 1, y, ge});
-					}
-					
-					else if(mapa[x - 1][y] != '#') {
-					
-						if(cst[x - 1][y][e] == -1) {
-						
-							cst[x - 1][y][e] = 1 + cst[x][y][e];
-							Q.push(coordenada {x - 1, y, e});	
-						}
-					}
-				}
-				
-				if(y < w - 1) {
-				
-					if(int ge = 0; mapa[x][y + 1] == '*' && cst[x][y + 1][(ge = e | 1 << graos[{x, y + 1}])] == -1) {
-					
-						cst[x][y + 1][ge] = 1 + cst[x][y][e];
-						Q.push(coordenada {x, y + 1, ge});
-					}
-					
-					else if(mapa[x][y + 1] != '#') {
-					
-						if(cst[x][y + 1][e] == -1) {
-						
-							cst[x][y + 1][e] = 1 + cst[x][y][e];
-							Q.push(coordenada {x, y + 1, e});	
-						}
-					}
-				}
-				
-				if(y) {
-				
-					if(int ge = 0; mapa[x][y - 1] == '*' && cst[x][y - 1][(ge = e | 1 << graos[{x, y - 1}])] == -1) {
-					
-						cst[x][y - 1][ge] = 1 + cst[x][y][e];
-						Q.push(coordenada {x, y - 1, ge});
-					}
-					
-					else if(mapa[x][y - 1] != '#') {
-					
-						if(cst[x][y - 1][e] == -1) {
-						
-							cst[x][y - 1][e] = 1 + cst[x][y][e];
-							Q.push(coordenada {x, y - 1, e});	
-						}
-					}
-				}
-			}
-		}
+    int n, m, w, h;
 
-		int max_rec = -1;
-				
-		for(int e = 0; e < ESTADOS; ++e) {
-	
-			if(cst[xf][yf][e] != -1)
-				max_rec = max(max_rec, count_bits[e]);
-		}
-	
-		printf("%d\n", max_rec);
-			
-		for(int i = 0; i < h; ++i) {
-		
-			for(int j = 0; j < w; ++j)
-				delete[] cst[i][j];
-				
-			delete[] cst[i];
-			delete[] mapa[i];
-		}
-		
-		delete[] cst;
-		delete[] mapa;
-	}
-	
-	return 0;
+    pair<int, int> delta[] = {
+        {-1, 0},
+        {1, 0},
+        {0, -1},
+        {0, 1}
+    };
+
+    while(cin >> n >> m >> w >> h) {
+        auto view = views::iota(0, h) | views::transform([](auto) {
+            string row;
+            cin >> row;
+            return row;
+        });
+
+        vector<string> grid;
+        queue<tuple<int, int, int>> q;
+        vector<pair<int, int>> dust;
+
+        ranges::copy(view, back_inserter(grid));
+
+        optional<pair<int, int>> start, finish;
+
+        ranges::for_each(views::iota(0, h), [&](auto r) {
+            ranges::for_each(views::iota(0, w), [&](auto c) {
+                if(grid[r][c] == 'R')
+                    start = make_pair(r, c);
+                else if(grid[r][c] == 'S')
+                    finish = make_pair(r, c);
+                else if(grid[r][c] == '*')
+                    dust.emplace_back(r, c);
+
+                for(int i = 0; i < (1 << n); ++i)
+                    dist[i][r][c] = -1;
+            });
+        });
+
+        assert(start && finish);
+
+        sort(dust.begin(), dust.end());
+
+        auto [x0, y0] = *start;
+
+        dist[0][x0][y0] = 0;
+        q.emplace(0, x0, y0);
+
+        while(!q.empty()) {
+            auto [mask, x, y] = q.front();
+
+            q.pop();
+
+            int d = dist[mask][x][y];
+
+            if(d == m)
+                continue;
+
+            for(auto [dx, dy] : delta) {
+                int xto = x + dx, yto = y + dy, maskto = mask;
+                
+                if(xto < 0 || xto >= h || yto < 0 || yto >= w || grid[xto][yto] == '#') continue;
+
+                auto it = find(dust.begin(), dust.end(), make_pair(xto, yto));
+
+                if(it != dust.end() && *it == make_pair(xto, yto))
+                    maskto |= 1 << static_cast<int>(distance(dust.begin(), it));
+
+                if(dist[maskto][xto][yto] != -1)
+                    continue;
+
+                dist[maskto][xto][yto] = 1 + d;
+                q.emplace(maskto, xto, yto);
+            }
+        }
+
+        auto [xf, yf] = *finish;
+
+        int answer {};
+        bool is_reacheable {};
+
+        for(int i = 0; i < (1 << n); ++i) {
+            is_reacheable = is_reacheable || dist[i][xf][yf] != -1;
+            answer = max(answer, dist[i][xf][yf] != -1 ? __builtin_popcount(i) : 0);
+        }
+
+        cout << (is_reacheable ? answer : -1) << '\n';
+    }
+
+    return 0;
 }
