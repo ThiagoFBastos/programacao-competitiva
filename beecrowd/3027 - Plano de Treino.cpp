@@ -1,56 +1,57 @@
-#include <cstdio>
-#include <vector>
-#include <queue>
-#include <functional>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-int main()
-{
-	int n, k, ganho;
-	long long custo {};
-	int *gramas, *precos;
-	priority_queue<int, vector<int>, greater<int>> pq;
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-	scanf("%d%d", &n, &k);	
+    int n;
+    long long k;
 
-	gramas = new int[n];
-	precos = new int[n];
+    cin >> n >> k;
 
-	for(int i = 0; i < n; ++i)
-		scanf("%d", gramas + i);
+    auto grams_view = views::iota(0, n) | views::transform([](auto) {
+        int grams;
+        cin >> grams;
+        return grams;
+    });
 
-	scanf("%d", &ganho);
+    vector<int> grams, costs;
+    priority_queue<int, vector<int>, greater<int>> pq;
+    int received;
+    long long cost {};
 
-	for(int i = 0; i < n; ++i)
-		scanf("%d", precos + i);
+    ranges::copy(grams_view, back_inserter(grams));
 
-	for(int i = 0; i < n; ++i)
-	{
-		pq.push(precos[i]);
+    cin >> received;
 
-		if(gramas[i] > k)
-		{
-			int aumento = (1LLU * gramas[i] - k + ganho - 1) / ganho; 
+    auto costs_view = views::iota(0, n) | views::transform([](auto) {
+        int cost;
+        cin >> cost;
+        return cost;
+    });
 
-			k += aumento * ganho;
+    ranges::copy(costs_view, back_inserter(costs));
 
-			for(int j = 0; j < aumento; ++j)
-			{
-				if(pq.empty())
-				{
-					custo = -1;
-					i = n;
-					break;
-				}
+    for(int i = 0; i < n; ++i) {
+        pq.push(costs[i]);
 
-				custo += pq.top();
-				pq.pop();
-			}
-		}
-	}
+        while(k < grams[i] && !pq.empty()) {
+            int c = pq.top();
+            pq.pop();
 
-	printf("%lld\n", custo);
+            k += received;
+            cost += c;
+        }
 
-	return 0;
+        if(k < grams[i]) {
+            cout << "-1\n";
+            return 0;
+        }
+    }
+
+    cout << cost << '\n';
+
+    return 0;
 }
