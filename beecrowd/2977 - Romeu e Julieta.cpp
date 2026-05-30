@@ -2,181 +2,86 @@
 
 using namespace std;
 
-using esquina = pair<int, int>;
+using result_type = std::optional<int>;
+using adjacency_list = std::vector<std::vector<std::pair<int, int>>>;
 
-struct cmp
+std::vector<result_type> dijkstra(const adjacency_list& adj, std::size_t start)
 {
-	bool operator()(esquina a, esquina b)
-	{
-		return a.second > b.second;
-	}
-};
+    using pq_type = std::pair<int, int>;
 
-int main()
-{
-	int n, m;
-	
-	scanf("%d%d", &n, &m);
-	
-	auto Nout = new vector<esquina>[n];
-	auto Nin = new vector<esquina>[n];
-	auto custo = new int*[2];
-	
-	custo[0] = new int[n];
-	custo[1] = new int[n];
-	
-	for(int k = 0; k < n; ++k)
-		custo[0][k] = custo[1][k] = INT_MIN;
-	
-	int src1, dest1, src2, dest2;
-	
-	scanf("%d%d%d%d", &src1, &dest1, &src2, &dest2);
-	
-	--src1, --dest1, --src2, --dest2;
-	
-	for(int k = 0; k < m; ++k)
-	{
-		int u, v, cst;
-		
-		scanf("%d%d%d", &u, &v, &cst);
-		
-		--u, --v;
-		
-		Nout[u].push_back({v, cst});
-		
-		Nin[v].push_back({u, cst});
-	}
-	
-	priority_queue<esquina, vector<esquina>, cmp> pq1, pq2;
-	
-	pq1.push({src1, 0});
-	
-	while(!pq1.empty())
-	{
-		int src, cst;
-		
-		src = pq1.top().first;
-		cst = pq1.top().second;
-		
-		pq1.pop();	
-		
-		if(custo[0][src] == INT_MIN)
-		{
-			custo[0][src] = cst;
-				
-			if(src == dest1)
-				break;
-				
-			for(auto edge : Nout[src])
-			{
-				int dest = edge.first;
-				
-				if(custo[0][dest] == INT_MIN)
-					pq1.push({dest, cst + edge.second});
-			}
-		}	
-	}
-	
-	pq2.push({src2, 0});
-	
-	while(!pq2.empty())
-	{
-		int src, cst;
-		
-		src = pq2.top().first;
-		cst = pq2.top().second;
-		
-		pq2.pop();	
-		
-		if(custo[1][src] == INT_MIN)
-		{
-			custo[1][src] = cst;
-			
-			if(src == dest2)
-				break;
-					
-			for(auto edge : Nout[src])
-			{
-				int dest = edge.first;
-			
-				if(custo[1][dest] == INT_MIN)
-					pq2.push({dest, cst + edge.second});
-			}
-		}	
-	}
-	
-	queue<int> Q1, Q2;
-	bool **seen {new bool*[2]};
-	
-	seen[0] = new bool[n];
-	seen[1] = new bool[n];
-	
-	for(int k = 0; k < n; ++k)
-		seen[0][k] = seen[1][k] = true;
-	
-	Q1.push(dest1);
-	
-	seen[0][dest1] = false;
-	
-	while(!Q1.empty())
-	{
-		int dest = Q1.front();
-			
-		Q1.pop();
-		
-		if(dest == src1)
-			continue;
-			
-		for(auto edge : Nin[dest])
-		{
-			int src = edge.first;
-			
-			if(seen[0][src] && custo[0][src] + edge.second == custo[0][dest])
-			{
-				seen[0][src] = false;
-				Q1.push(src);
-			}
-		}
-	}
-	
-	
-	Q2.push(dest2);
-	
-	seen[1][dest2] = false;
-	
-	while(!Q2.empty())
-	{
-		int dest = Q2.front();
-			
-		Q2.pop();
-		
-		if(dest == src2)
-			continue;
-			
-		for(auto edge : Nin[dest])
-		{
-			int src = edge.first;
-			
-			if(seen[1][src] && custo[1][src] + edge.second == custo[1][dest])
-			{
-				seen[1][src] = false;
-				Q2.push(src);
-			}
-		}
-	}
-	
-	int menor_custo = INT_MAX;
-	
-	for(int v = 0; v < n; ++v)
-	{
-		if(!seen[0][v] && !seen[1][v] && custo[0][v] == custo[1][v])
-			menor_custo = min(menor_custo, custo[0][v]);
-	}
-	
-	if(menor_custo == INT_MAX) 
-		menor_custo = -1;
-	
-	printf("%d\n", menor_custo);
-	
-	return 0;
+    const auto n = adj.size();
+
+    std::vector<result_type> dist(n);
+    std::priority_queue<pq_type, std::vector<pq_type>, std::greater<pq_type>> pq;
+
+    pq.emplace(0LL, start);
+
+    while(!pq.empty())
+    {
+        auto [cost, start] = pq.top();
+
+        pq.pop();
+
+        if(dist[start].has_value())
+            continue;
+
+        dist[start] = cost;
+
+        for(const auto& [dest, weight] : adj[start])
+        {
+            if(dist[dest].has_value())
+                continue;
+
+            pq.emplace(cost + weight, dest);
+        }
+    }
+
+    return dist;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    size_t n, m;
+    size_t js, jg, rs, rg;
+
+    cin >> n >> m;
+    cin >> js >> jg >> rs >> rg;
+
+    --js, --jg, --rs, --rg;
+
+    adjacency_list adj(n), inv_adj(n);
+
+    for(size_t i = 0; i < m; ++i) {
+        size_t u, v;
+        int t;
+
+        cin >> u >> v >> t;
+
+        --u, --v;
+        adj[u].emplace_back(v, t);
+        inv_adj[v].emplace_back(u, t);
+    }
+    
+    auto jto = dijkstra(adj, js);
+    auto jfrom = dijkstra(inv_adj, jg);
+    auto rto = dijkstra(adj, rs);
+    auto rfrom = dijkstra(inv_adj, rg);
+
+    optional<int> meeting;
+
+    for(size_t u = 0; u < n; ++u) {
+        if(!jto[u] || !jfrom[u] || *jto[u] + *jfrom[u] != *jto[jg] || *rto[u] + *rfrom[u] != *rto[rg] || *jto[u] != *rto[u])
+            continue;
+
+        meeting = min(meeting.value_or(numeric_limits<typename decltype(meeting)::value_type>::max()), *jto[u]);
+    }
+
+    if(meeting)
+        cout << *meeting << '\n';
+    else
+        cout << "-1\n";
+
+    return 0;
 }
