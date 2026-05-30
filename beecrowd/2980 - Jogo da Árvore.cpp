@@ -1,104 +1,74 @@
-#include <cstdio>
-#include <vector>
-#include <utility>
-#include <cstring>
-#include <algorithm>
+#include <bits/stdc++.h>
+
 using namespace std;
 
-class Tree
-{
-	private:
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-		vector<pair<int, int>> *edges;
-		int *h, *points;
-		int hmax;
+    size_t n, x;
+    int k;
 
-		void dfs(int);
+    cin >> n;
 
-	public:
+    vector<vector<pair<int, int>>> adj(n);
+    vector<optional<int>> dist(n);
+    vector<long long> cost(n);
+    queue<size_t> q;
 
-		Tree(int);
+    ranges::for_each(views::iota(size_t {1}, n), [&](auto) {
+        size_t u, v;
+        int w;
 
-		void addEdge(int, int, int);
+        cin >> u >> v >> w;
 
-		int get_max_points(int, int);
-};
+        --u, --v;
 
-Tree :: Tree(int v)
-{
+        adj[u].emplace_back(v, w);
+        adj[v].emplace_back(u, w);
+    });
 
-	edges = new vector<pair<int, int>>[v];
+    cin >> k >> x;
 
-	h = new int[v];
+    q.emplace(--x);
+    dist[x] = 0;
+    cost[x] = 0;
 
-	points = new int[v];
+    while(!q.empty()) {
+        auto u = q.front();
 
-	memset(h, -1, v * sizeof(int));
-}
+        q.pop();
 
-void Tree :: addEdge(int v1, int v2, int cost)
-{
-	edges[v1].push_back({v2, cost});
-	edges[v2].push_back({v1, cost});
-}
+        if(*dist[u] == k)
+            continue;
 
-int Tree :: get_max_points(int v, int hmax)
-{
-	this->hmax = hmax;
+        for(const auto& [v, w] : adj[u]) {
+            if(dist[v]) continue;
+            dist[v] = 1 + *dist[u];
+            cost[v] = w + cost[u];
+            q.emplace(v);
+        }
+    }
 
-	h[v] = 0;
+    auto max_cost = numeric_limits<long long>::min();
 
-	dfs(v);
+    for(auto u : views::iota(size_t {}, n)) {
 
-	return points[v];
-}
+        if(!dist[u])
+            continue;
+            
+        auto max_edge_weight = numeric_limits<long long>::min();
 
-void Tree :: dfs(int v1)
-{
-	points[v1] = 0;
+        for(const auto& [_, w] : adj[u])
+            max_edge_weight = max<long long>(max_edge_weight, w);
 
-	if(h[v1] < hmax - 1)
-	{
-		int max_points {};
+        int d = *dist[u];
+        auto cst = cost[u] + (k - d + 0ll) * max_edge_weight;
 
-		for(auto E : edges[v1])
-		{
-			int v2 = E.first;
+        max_cost = max(max_cost, cst);
+    }
 
-			if(h[v2] == -1)
-			{
-				h[v2] = 1 + h[v1];
+    cout << max_cost;
 
-				dfs(v2);
-
-				max_points = max(E.second + points[v2], max(max_points, (hmax - h[v1]) * E.second));
-			}
-		}
-
-		points[v1] = max_points;
-	}
-}
-
-int main()
-{
-	int n, hmax, start;
-
-	scanf("%d", &n);
-
-	Tree T(n);
-
-	for(int k = 1; k < n; ++k)
-	{
-		int v1, v2, cost;
-
-		scanf("%d%d%d", &v1, &v2, &cost);
-
-		T.addEdge(v1 - 1, v2 - 1, cost);
-	}
-
-	scanf("%d%d", &hmax, &start);
-
-	printf("%d", T.get_max_points(start - 1, hmax));
-
-	return 0;
+    return 0;
 }
