@@ -1,152 +1,267 @@
-#include <bits/stdc++.h>
+#include "bits/stdc++.h"
 
 using namespace std;
 
-#define FOR(k, a, b) for(register int k = (a); k <= (b); ++k)
-#define REP(k, a, b) for(register int k = (a); k >= (b); --k)
-#define FORs(k, a, b, s) for(register int k = (a); k <= (b); k += s)
+namespace math
+{
 
-#define all(x) x.begin(), x.end()
-#define up(x, y) upper_bound(all(x), y)
-#define lower(x, y) lower_bound(all(x), y)
-#define INF 0x3ffffff
-#define fi first
-#define sc second
-
-using vi = vector<int>;
-using ii = pair<int, int>;
-using vii = vector<ii>;
-
-typedef unsigned long long ull;
-typedef long long ll;
-
-using VLL = vector<ll>;
-
-#define MAXN 30000000
-
-static vi primes {2};
-static bool *is_prime;
-
-static inline VLL divisors(ll);
-
-VLL divisors(ll N) {
-
-	VLL d {1};
-	
-	if(N < MAXN && is_prime[N]) {
-	
-		d.push_back(N);
-		return d;
+/**
+ * @brief Compute the greatest common divisor of two numbers
+ * @param a a number
+ * @param b a number
+ * @return the greatest common divisor of a and b
+ * @note This function is necessary because std::gcd does not support __int128
+ * numbers, which are used in the factorization process.
+ */
+__int128 gcd(__int128 a, __int128 b) 
+{
+	while (b != 0)
+	{
+		auto temp = b;
+		b = a % b;
+		a = temp;
 	}
+
+	return a;
+}
+
+/**
+ * @brief Compute the absolute value of a number
+ * @param x a number
+ * @return the absolute value of x
+ * @note This function is necessary because std::abs does not support __int128
+ * numbers, which are used in the factorization process.
+ */
+constexpr __int128 abs(__int128 x) 
+{
+	return x < 0 ? -x : x;
+}
+
+/**
+ * @brief Take the modulo of the mutiplication of two numbers
+ * @param a a number
+ * @param b a number
+ * @param m the modulo
+ */
+template<class T>
+inline T modMul(T a, T b, T m)
+{
+	return (T)((__int128)a * b % m);
+}
+ 
+/**
+ * @brief Modular binary exponentiation
+ * @param a the base number
+ * @param p the power
+ * @param m the modulo
+ */
+template<class T>
+inline T modMulExp(T a, T p, T m)
+{
+	T ans = 1;
+	for(; p > 0; p >>= 1) 
+	{
+		if(p & 1) ans = modMul(ans, a, m);
+		a = modMul(a, a, m);
+	}
+	return ans;
+}
+ 
+/**
+ * @brief Miller-Rabin algorithm to check whether a number is prime
+ * @param n the target number
+ * @return true if the number is prime, and false otherwise
+ */
+template<class T>
+inline bool miller(T n)
+{
+	const int pn = 9;
+	const T p[] = {2, 3, 5, 7, 11, 13, 17, 19, 23};
+
+	for(T k : p)
+		if(n % k == 0)
+			return n == k;
 	
-	if(!(N & 1)) {
-	
-		ll pmax = N & -N;
-		ll p = 1;
-		
-		while(p < pmax) {
-		
-			p <<= 1;
-			d.push_back(p);
+	if(n < p[pn - 1]) return false;
+
+	T t = n - 1;
+	int s = 0;
+
+	while(~t & 1) t >>= 1, ++s;
+
+	for(T k : p)
+	{
+		T pt = modMulExp(k, t, n);
+
+		if(pt == 1) continue;
+
+		bool ok = false;
+
+		for(int j = 0; j < s && !ok; ++j)
+		{
+			ok = ok || pt == n - 1;
+			pt = modMul(pt, pt, n);
 		}
-		
-		N /= pmax;
+
+		if(!ok) return false;
 	}
-	
-	register int k;
-	int K = primes[1];
-	
-	for(k = 1; 1LL * K * K <= N; ++k) {
-		
-		if(N % K == 0) {
-		
-			ll p = K;
-			int n = d.size();
-		
-			while(N % p == 0) {
-				
-				FOR(i, 0, n - 1)
-					d.push_back(d[i] * p);
-			
-				p *= K;	
+
+	return true;
+}
+ 
+/**
+ * @brief Auxiliary function used by the rho method
+ * @param x the number to square up
+ * @param c the linear coefficient
+ * @param mod the number to take the modulo of the function
+ * @return (x^2 + c) % mod
+ */
+template<class T>
+inline T f(T x, T c, T mod)
+{
+	return (modMul(x, x, mod) + c) % mod;
+}
+ 
+/**
+ * @brief Pollard-Rho algorithm to find a factor of n
+ * @param n the target number
+ * @return a factor of n != 1, n (cannot be called for prime numbers)
+ */
+template<class T>
+inline T rho(T n)
+{
+	std::mt19937 rnd(std::chrono::system_clock::now().time_since_epoch().count());
+	T x, y, g = n;
+
+	while(g == n)
+	{
+		T x0 = rnd(), c = rnd();
+		x = y = x0;
+		g = 1;
+
+		while(g == 1)
+		{
+			x = f(x, c, n);
+			y = f(f(y, c, n), c, n);
+
+			if constexpr(std::is_same_v<decltype(n), __int128>)
+			{
+				g = gcd(abs(x - y), n);	
 			}
-			
-			p /= K;
-			N /= p;			
+			else
+			{
+				g = std::gcd(std::abs(x - y), n);
+			}
+		}
+	}
+
+	return g;
+}
+	
+/**
+ * @brief Factor a number using the pollard-rho algorithm and a brute force of
+ * prime numbers until n^(1 / 4)
+ * @param n the target number
+ * @return a vector of factors as (p, k), ie, p^k
+ */
+template<class T>
+inline auto factorize(T n)
+{	
+	std::vector<std::pair<T, int>> f;
+	
+	if(~n & 1)
+	{
+		int k = 0;
+
+		while(~n & 1)
+		{
+			n >>= 1;
+			++k;
+		}
+
+		f.emplace_back(2, k);
+	}
+
+	for(T p = 3; p * p * p * p <= n; p += 2)
+	{
+		if(n % p) continue;
+
+		int i = 0;
+		while(n % p == 0) n /= p, ++i;
+		f.emplace_back(p, i);
+	}
+
+	while(n != 1)
+	{
+		if(miller(n))
+		{
+			f.emplace_back(n, 1);
+			break;
 		}
 		
-		K = primes[k + 1];
+		T k = rho(n);
+		
+		if(!miller(k))
+			k = rho(k);
+
+		int i = 0;
+		while(n % k == 0) n /= k, ++i;
+		f.emplace_back(k, i);
 	}
-	
-	if(N > 1) {
-	
-		int n = d.size();
-	
-		FOR(i, 0, n - 1)
-			d.push_back(d[i] * N);
-	}
-	
-	return d;
+
+	return f;
+}
+
 }
 
 int main() {
+	ios_base :: sync_with_stdio(false);
+	cin.tie(0);
 	
-	is_prime = new bool[MAXN];
-	
-	memset(is_prime, -1, MAXN * sizeof(bool));
-	
-	primes.reserve(1857860);
-	
-	FORs(k, 4, MAXN, 2)
-		is_prime[k] = false;
-		
-	FORs(k, 3, MAXN, 2) {
-	
-		if(is_prime[k]) {
-		
-			int j = k << 1;
-			
-			FORs(i, j + k, MAXN, j)
-				is_prime[i] = false; 
+	long long n;
 
-			primes.push_back(k);
-		}
-	}
-	
-	primes.push_back(MAXN + 1);
-	
-	ll N;
-	
-	while(scanf("%lld", &N) != EOF) {
-	
-		if(N < 2)
-			puts("1");
-			
-		else {
-		
-			VLL divisores = divisors(N);
-		
-			int n = divisores.size();
-		
-			int count = 0;
-			
-			FOR(k, 0, n - 1) {
-			
-				ll X = divisores[k], Y, a, b;
-		
-				Y = N / X;
-				X <<= 1;
-			
-				a = X + Y >> 1;
-				b = max(X, Y) - a;
-				
-				if(llabs(b - a) + 1 == min(X, Y)) ++count;
+	auto divisors = [](const auto& factors) {
+		std::vector<long long> divs = {1};
+
+		for(auto [p, k] : factors) {
+			const auto n = divs.size();
+			long long power = 1;
+
+			for(int i = 0; i < k; ++i) {
+				power *= p;
+
+				for(int j = 0; j < n; ++j)
+					divs.push_back(divs[j] * power);
 			}
-			
-			printf("%d\n", count);
 		}
+
+		return divs;
+	};
+
+	while(cin >> n) {
+
+		auto factors = math::factorize(2 * n);
+		auto divs = divisors(factors);
+		
+		int cnt {};
+
+		for(auto a : divs) {
+			auto b = 2 * n / a;
+
+			auto sum = a + b - 1;
+
+			if(sum <= 0 || sum % 2) continue;
+
+			auto r = sum / 2;
+			auto l = a - r;
+
+			if(l > 0)
+				++cnt;
+		}
+
+		cout << cnt << '\n';
 	}
-	
-	
+
 	return 0;
 }
+ 
