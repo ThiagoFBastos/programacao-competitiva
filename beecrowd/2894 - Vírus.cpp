@@ -2,117 +2,67 @@
 
 using namespace std;
 
-static vector<int> *N;
-static int *low, *pre, *pai, *pos, *ts, e, s; 
-static vector<pair<int, int>> pontes;
 
-static void dfs(int);
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-void dfs(int v)
-{
-	pre[v] = e++;
-	low[v] = pre[v];
-	ts[v] = 1;
-	
-	for(int w : N[v])
-	{
-		if(pre[w] == -1)
-		{
-			pai[w] = v;
-			
-			dfs(w);
-			
-			ts[v] += ts[w];
-			
-			if(pre[v] < low[w])
-				pontes.push_back({v, w});
-			
-			low[v] = min(low[v], low[w]);
-		}
-		
-		else if(w != pai[v])
-			low[v] = min(low[v], pre[w]);
-			
-		else
-			pai[v] = v;
-	}
-	
-	pos[v] = s++;
-}
+    size_t t;
 
-int main()
-{	
-	int tests;
-	
-	ios_base :: sync_with_stdio(false);
-	
-	cin >> tests;
-	
-	while(tests--)
-	{
-		int V, E, id;
-		
-		cin >> V >> E >> id;
-		
-		N = new vector<int>[V];
-		pre = new int[V];
-		low = new int[V];
-		ts = new int[V];
-		pai = new int[V];
-		pos = new int[V];
-		
-		for(int i = 0; i < V; ++i)
-		{
-			pre[i] = -1;
-			pai[i] = -1;
-			ts[i] = 0;
-		}
-		
-		for(int i = 0; i < E; ++i)
-		{
-			int v1, v2;
-			
-			cin >> v1 >> v2;
-			
-			--v1;
-			--v2;
-			
-			N[v1].push_back(v2);
-			N[v2].push_back(v1);
-		}
-		
-		e = s = 0;
-		
-		pai[0] = 0;
-		
-		dfs(0);
-		
-		--id;
-		
-		int iso = 0;
+    cin >> t;
 
-		for(auto [v1, v2] : pontes)
-		{
-			int X = V - ts[v2], Y = ts[v2];
-		
-			if(pre[id] >= pre[v2] && pos[v2] >= pos[id])
-				iso = max(iso, X);
-			
-			else
-				iso = max(iso, Y);
-		}
-		
-		cout << iso << '\n';
-		
-		delete[] N;
-		delete[] pre;
-		delete[] low;
-		delete[] ts;
-		delete[] pai;
-		delete[] pos;
-		
-		pontes.clear();
-	}
+    for(size_t i = 0; i < t; ++i) {
+        size_t n, m, c;
 
-	return 0;
+        cin >> n >> m >> c;
+
+        --c;
+
+        vector<vector<pair<size_t, size_t>>> adj(n);
+        vector<int> low(n), sz(n);
+        vector<optional<int>> desc(n);
+        vector<pair<size_t, size_t>> bridges;
+        int timestamp {};
+
+        for(size_t j = 0; j < m; ++j) {
+            size_t u, v;
+
+            cin >> u >> v;
+
+            --u, --v;
+
+            adj[u].emplace_back(v, j);
+            adj[v].emplace_back(u, j);
+        }
+
+        auto dfs = [&](auto& self, size_t u, optional<pair<size_t, size_t>> parent) -> void {
+            desc[u] = low[u] = timestamp++;
+            sz[u] = 1;
+
+            for(const auto& e : adj[u]) {
+                const auto& [v, id] = e;
+
+                if(!desc[v]) {
+                    self(self, v, make_pair(u, id));
+                    low[u] = min(low[u], low[v]);
+                    sz[u] += sz[v];
+
+                    if(*desc[u] < low[v])
+                        bridges.emplace_back(u, v);
+                } else if(e != parent)
+                    low[u] = min(low[u], *desc[v]);
+            }
+        };
+
+        dfs(dfs, c, nullopt);
+
+        int max_number_of_cities {};
+
+        for(const auto &[u, v] : bridges)
+            max_number_of_cities = max(max_number_of_cities, sz[v]);
+
+        cout << max_number_of_cities << '\n';
+    }
+
+    return 0;
 }
