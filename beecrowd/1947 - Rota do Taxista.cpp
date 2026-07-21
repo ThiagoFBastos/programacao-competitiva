@@ -8,12 +8,11 @@ vector<pair<int, int>> adj[N];
 int dp[1 << K][K], pairwiseDist[K + 1][K + 1]; 
 int n, m, k;
 
-optional<int> dijkstra(int src, int dest) {
+vector<int> dijkstra(int src) {
     using pq_type = pair<int, int>;
 
     vector<int> dist(n, INF);
     priority_queue<pq_type, vector<pq_type>, greater<pq_type>> pq;
-    optional<int> answer;
 
     dist[src] = 0;
     pq.emplace(0, src);
@@ -25,9 +24,6 @@ optional<int> dijkstra(int src, int dest) {
 
         if(cost != dist[v]) {
             continue;
-        } else if(v == dest) {
-            answer = cost;
-            break;
         }
 
         for(const auto& [u, w] : adj[v]) {
@@ -40,7 +36,7 @@ optional<int> dijkstra(int src, int dest) {
         }
     }
 
-    return answer;
+    return dist;
 }
 
 int main() {
@@ -75,11 +71,9 @@ int main() {
     for(int i = 0; i <= k; ++i) {
         auto [src1, dest1] = travels[i];
 
-        auto cost = dijkstra(src1, dest1);
+        pairwiseDist[i][i] = dijkstra(src1)[dest1];
 
-        assert(static_cast<bool>(cost));
-
-        pairwiseDist[i][i] = *cost;
+        auto costs = dijkstra(dest1);
 
         for(int j = 0; j <= k; ++j) {
             if(i == j)
@@ -87,11 +81,7 @@ int main() {
 
             int src2 = travels[j].first;
 
-            cost = dijkstra(dest1, src2);
-
-            assert(static_cast<bool>(cost));
-
-            pairwiseDist[i][j] = *cost;
+            pairwiseDist[i][j] = costs[src2];
         }
     }
 
