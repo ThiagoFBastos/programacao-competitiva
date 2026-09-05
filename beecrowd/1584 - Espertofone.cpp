@@ -19,7 +19,7 @@ public:
 	size_t columns() const { return _columns; }
 	int& at(size_t i, size_t j) { return _container[i][j]; }
 
-	mod_matrix<MOD> operator*(mod_matrix& rhs) {
+	mod_matrix operator*(mod_matrix& rhs) {
 		assert(columns() == rhs.rows());
 		mod_matrix<MOD> result(rows(), rhs.columns());
 
@@ -31,7 +31,7 @@ public:
 		return result;
 	}
 
-	static mod_matrix<MOD> identity(size_t rows, size_t columns) {
+	static mod_matrix identity(size_t rows, size_t columns) {
 		mod_matrix<MOD> result(rows, columns);
 
 		for(size_t i = 0; i < rows; ++i)
