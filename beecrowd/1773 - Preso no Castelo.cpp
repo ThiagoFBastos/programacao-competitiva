@@ -2,7 +2,6 @@
 
 using namespace std;
 
-
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
@@ -26,12 +25,8 @@ int main() {
 			keyLocation[loc - 1].push_back(i);
 		}
 
-		vector<bool> vis(n, false);
-		unordered_set<int> border, keys;
+		vector<bool> vis(n, false), border(n, false), keys(n, false);
 		queue<int> q;
-		
-		border.reserve(n);
-		keys.reserve(n);
 
 		/*
 			1. vértice contém chave para outro vértice (não visitado) 
@@ -54,9 +49,9 @@ int main() {
 			q.pop();
 
 			for(int v : keyLocation[u]) {
-				keys.insert(v);
+				keys[v] = true;
 
-				if(!vis[v] && border.count(v)) {
+				if(!vis[v] && border[v]) {
 					vis[v] = true;
 					q.push(v);
 				}
@@ -65,11 +60,11 @@ int main() {
 			for(int v : adj[u]) {
 				if(vis[v])
 					continue;
-				else if(keys.count(v)) {
+				else if(keys[v]) {
 					vis[v] = true;
 					q.push(v);
 				} else
-					border.insert(v);
+					border[v] = true;
 			}
 		}
 
