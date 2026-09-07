@@ -1,6 +1,18 @@
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
 
 using namespace std;
+using namespace __gnu_pbds;
+
+template <class K, class V>
+using ht = gp_hash_table
+<K, V, std :: hash<K>, std :: equal_to<K>,
+direct_mask_range_hashing<>,
+linear_probe_fn<>,
+hash_standard_resize_policy<
+hash_exponential_size_policy<>,
+hash_load_check_resize_trigger
+<>, true>>;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
  
@@ -56,7 +68,7 @@ struct MersenneHash {
 };
 
 template<class T, int k>
-long long MersenneHash<T, k> :: P = uniform(256, (1ll << k) - 1);
+long long MersenneHash<T, k> :: P = uniform(256, (1ll << k) - 2);
 
 int main() {
 	ios_base::sync_with_stdio(false);
@@ -71,9 +83,9 @@ int main() {
 	auto check = [&](int L) {
 		const int n = static_cast<int>(str.size());
 
-		unordered_set<long long> us;
+		ht<long long, null_type> us;
 
-		us.reserve(n - L + 1);
+		us.resize(n - L + 1);
 
 		for(int i = 0; i <= n - L; ++i)
 			us.insert(mh(i, i + L - 1));
@@ -85,7 +97,7 @@ int main() {
 			for(char ch : {'0', '1'}) {
 				auto new_hash = mh.mulmod(mh.addmod(h, mh.mulmod((int)ch, mh.p[i + L])), mh.p[n - i]);
 
-				if(!us.count(new_hash))
+				if(auto it = us.find(new_hash); it == us.end())
 					return true;
 			}
 		}
